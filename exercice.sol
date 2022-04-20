@@ -15,7 +15,7 @@ contract Router {
 contract MOBL is ERC20 {
   
   constructor() ERC20('MOBL', 'Mobula Finance') {
-    _mint(msg.sender, 5 * 1e10); // 50 B
+    _mint(msg.sender, 5000); 
   }
 }
 
@@ -59,7 +59,7 @@ contract Swapper {
     // WHITELIST THE TOKEN
 
     function whitelistToken(bytes32 _symbol, address _tokenAddress) public {
-        require(msg.sender == owner, 'This function is not public');
+        require(msg.sender == owner, "This function is not public");
         whitelistedTokens[_symbol] = _tokenAddress;
     }
 
@@ -76,9 +76,11 @@ contract Swapper {
     ERC20 MOBL_token  = ERC20(MOBLAddress); // MOBL Mobula Finance 
 
     function swapUSDCToMOBL(uint _amount) public payable isWhitelisted(msg.sender){
-        require(_amount + MontantByAddress <= 50000, "Cant buy more than 50 000 MOBL");
+        require(_amount + MontantByAddress <= 500, "Cant buy more than 500 MOBL");
         require(msg.sender.balance >= _amount, "Insufficent funds");
-        USDC_token.transferFrom(msg.sender, address(this), _amount);
+        
+        USDC_token.transferFrom(msg.sender, address(this), _amount );
+        MontantByAddress += _amount ;
         address[] memory path = new address[](2);
         path[0] = address(USDC_token); 
         path[1] = address(MOBL_token);
