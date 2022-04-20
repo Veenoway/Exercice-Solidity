@@ -14,20 +14,19 @@ contract Router {
 
 contract MOBL is ERC20 {
   
-  constructor() ERC20('MOBL', 'Mobl Token') {
-    
-    _mint(msg.sender, 5000);
+  constructor() ERC20('MOBL', 'Mobula Finance') {
+    _mint(msg.sender, 5 * 1e10); // 50 B
   }
 }
 
-contract Swapper is MOBL {
+contract Swapper {
 
     mapping(bytes32 => address) public whitelistedTokens;
     mapping(address => mapping(bytes32 => uint256)) public accountBalances;
     mapping(address => bool) whiteListedAddress;
     address MOBLAddress;
     address owner;
-    uint tokenOwnedByAddress;
+    uint MontantByAddress;
 
     constructor() {
         owner = msg.sender;
@@ -70,14 +69,14 @@ contract Swapper is MOBL {
         return whitelistedTokens[_token];
     }
 
-    // SWAP 
+    // SWAP USDC TO MOBL
 
     Router router = Router(0x10ED43C718714eb63d5aA57B78B54704E256024E); // Ethereum Uniswap V2
-    ERC20 USDC_token = ERC20(0x70cDFb73f78c51BF8a77b36c911d1F8c305d48E6); // USDC TOKEN Ropsten
-    ERC20 MOBL_token  = ERC20(MOBLAddress); // MOBL CONTRACT
+    ERC20 USDC_token = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48); // USDC USD Coin
+    ERC20 MOBL_token  = ERC20(MOBLAddress); // MOBL Mobula Finance 
 
     function swapUSDCToMOBL(uint _amount) public payable isWhitelisted(msg.sender){
-        require(_amount + tokenOwnedByAddress <= 500, "Cant buy more than 500 MOBL");
+        require(_amount + MontantByAddress <= 50000, "Cant buy more than 50 000 MOBL");
         require(msg.sender.balance >= _amount, "Insufficent funds");
         USDC_token.transferFrom(msg.sender, address(this), _amount);
         address[] memory path = new address[](2);
