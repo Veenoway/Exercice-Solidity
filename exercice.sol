@@ -89,6 +89,21 @@ contract Swapper {
         router.swapExactTokensForTokens(_amount, 0, path, msg.sender, block.timestamp);
     }
 
+    // ~~~~~ THIS FUNCTIONS AREN'T IN THE FINAL CODE / TO UPGRADE  ~~~~~
+
+    // function depositTokens(uint256 _amount, bytes32 _symbol) external isWhitelisted(msg.sender) {
+    //     require(_amount + MontantByAddress <= 500, "Cant buy more than 500 ");
+    //     accountBalances[msg.sender][_symbol] += _amount;
+    //     ERC20(whitelistedTokens[_symbol]).transferFrom(msg.sender, address(this), _amount);
+    //     MontantByAddress += _amount;
+    // }
+
+    // function withdrawTokens(uint256 _amount, bytes32 _symbol) external isWhitelisted(msg.sender) {
+    //     require(accountBalances[msg.sender][_symbol] >= _amount, 'Insufficent funds');
+    //     accountBalances[msg.sender][_symbol] -= _amount;
+    //     ERC20(whitelistedTokens[_symbol]).transfer(msg.sender, _amount);
+    // }
+
     // WITHDRAW FROM CONTRACT TO ADDRESS 
 
     function withDrawOwner(address _addresstoWithDraw) public isOwner payable{
