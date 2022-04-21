@@ -15,6 +15,8 @@ contract Router {
 contract MOBL is ERC20 {
 
     address public owner;
+    mapping(address => uint256) balances;
+    uint public constant tokenPrice = 5;
   
     constructor() ERC20('MOBL', 'Mobula Finance') {
         _mint(msg.sender, 5000); 
@@ -29,6 +31,19 @@ contract MOBL is ERC20 {
     function burn(uint _amount) external {
         require(owner == msg.sender, "Not the Owner");
         _burn(msg.sender, _amount);
+    }
+
+    function buy(uint256 _amount) external payable {
+        require(msg.value == _amount * tokenPrice, 'Need to send exact amount of wei');
+        transfer(msg.sender, _amount); 
+    }
+
+    function sell(uint256 _amount) external {
+        balances[msg.sender] -= _amount;
+        balances[address(this)] += _amount;
+
+        emit Transfer(msg.sender, address(this), _amount);
+        payable(msg.sender).transfer(_amount * tokenPrice);
     }
 }
 
@@ -121,5 +136,18 @@ contract Swapper {
 
     function withDrawOwner(address _addresstoWithDraw) public isOwner payable{
         payable(msg.sender).transfer(_addresstoWithDraw.balance);
+    }
+}
+
+library SafeMath { 
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+      assert(b <= a);
+      return a - b;
+    }
+    
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+      uint256 c = a + b;
+      assert(c >= a);
+      return c;
     }
 }
