@@ -13,10 +13,22 @@ contract Router {
 }
 
 contract MOBL is ERC20 {
+
+    address public owner;
   
-  constructor() ERC20('MOBL', 'Mobula Finance') {
-    _mint(msg.sender, 5000); 
-  }
+    constructor() ERC20('MOBL', 'Mobula Finance') {
+        _mint(msg.sender, 5000); 
+        owner = msg.sender;
+    }
+
+    function mint(address _to, uint _amount) external {
+        require(owner == msg.sender, "Not the Owner");
+        _mint(_to, _amount);
+    }
+
+    function burn(uint _amount) external {
+        _burn(msg.sender)
+    }
 }
 
 contract Swapper {
@@ -42,6 +54,11 @@ contract Swapper {
     modifier isOwner() {
         require(msg.sender == owner, "Caller must be the owner");
         _;
+    }
+
+    function verifyUser(address _whitelistedAddress) public view returns(bool) {
+        bool userIsWhitelisted = whitelistedAddress[_whitelistedAddress];
+        return userIsWhitelisted;
     }
 
     // ADD ADDRESS TO WHITELIST  
@@ -75,7 +92,7 @@ contract Swapper {
     ERC20 USDC_token = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48); // USDC USD Coin
     ERC20 MOBL_token  = ERC20(MOBLAddress); // MOBL Mobula Finance 
 
-    function swapUSDCToMOBL(uint _amount) public payable isWhitelisted(msg.sender){
+    function swapUSDCToMOBL(uint _amount) public isWhitelisted(msg.sender){
         require(_amount + MontantByAddress <= 500, "Cant buy more than 500 MOBL");
         require(msg.sender.balance >= _amount, "Insufficent funds");
         
