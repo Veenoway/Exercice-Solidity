@@ -27,7 +27,8 @@ contract MOBL is ERC20 {
     }
 
     function burn(uint _amount) external {
-        _burn(msg.sender)
+        require(owner == msg.sender, "Not the Owner");
+        _burn(msg.sender, _amount);
     }
 }
 
@@ -54,11 +55,6 @@ contract Swapper {
     modifier isOwner() {
         require(msg.sender == owner, "Caller must be the owner");
         _;
-    }
-
-    function verifyUser(address _whitelistedAddress) public view returns(bool) {
-        bool userIsWhitelisted = whitelistedAddress[_whitelistedAddress];
-        return userIsWhitelisted;
     }
 
     // ADD ADDRESS TO WHITELIST  
